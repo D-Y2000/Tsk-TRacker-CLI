@@ -43,8 +43,8 @@ def add_task(task_name):
         "id": tasks_count+1,
         "description" : task_name,
         "status":"to-do",
-        "created_at":f"{datetime.now()}",
-        "updated_at":f"{datetime.now()}"
+        "created_at":f"{datetime.now().strftime('%Y/%m/%d  %H:%M:%S')}",
+        "updated_at":f"{datetime.now().strftime('%Y/%m/%d  %H:%M:%S')}"
     }
     tasks.append(task)
     save_edits(tasks)
@@ -54,6 +54,7 @@ def update_task(task_id,task_name):
     tasks =  load_data()
     try:
         tasks[int(task_id)-1]['description'] = task_name
+        tasks[int(task_id)-1]["updated_at"] = f"{datetime.now().strftime('%Y/%m/%d  %H:%M:%S')}"
         save_edits(tasks)
         print("Task updated succefully\n")
     except IndexError:
@@ -98,6 +99,7 @@ def mark_status(status,task_id):
     if status in status_list:
         try:
             tasks[int(task_id)-1]['status'] = status
+            tasks[int(task_id)-1]["updated_at"] = f"{datetime.now().strftime('%Y/%m/%d  %H:%M:%S')}"
             save_edits(tasks)
             print("Task updated succefully\n")
         except IndexError:
