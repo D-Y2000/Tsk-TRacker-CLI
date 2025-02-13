@@ -5,6 +5,7 @@ import os
 
 file_name = "tasks.json"
 status_list = ['done', 'to-do' , 'in-progress']
+
 def display_menu():
     print("######################################## Task Tracker ########################################\n\n")
     print("To Interact with the program use these commands:\n")
@@ -21,24 +22,22 @@ def display_menu():
 
 
 def load_data():
+    tasks = []
+    #  check if the file exists and is not empty.
     if os.path.exists(file_name) and os.stat(file_name).st_size > 0:
         with open(file_name, "r") as file:
             try:
                 content = json.load(file)
                 if content:
                     tasks = content['tasks']
-                    tasks_count = len(content['tasks'])
-                else:
-                    tasks = []
             except json.JSONDecodeError:
                 print("Invalid JSON format.")            
-    else:
-        print("file doesn't extsits")
     return tasks
 
 def add_task(task_name):
-
+    # Load the existing data
     tasks = load_data()
+    # fetch tasks count in order to set the correct id for the new task
     tasks_count = len(tasks)
     task = {
         "id": tasks_count+1,
@@ -73,16 +72,21 @@ def delete_task(task_id):
 def list_task():
     tasks = load_data()
     print("\n")
-    for task in tasks:
-        print(f"{task['id']} \t{task['description']}    \tstatus : {task['status']}\n")
+    if len(tasks) > 0  :
+        print("Tasks List : \n")
+        for task in tasks:
+            print(f"{task['id']} \t{task['description']}    \tstatus : {task['status']}\n")
+    else:
+        print("There is no task")
 
 def list_by_status(status):
     if status in status_list:
         tasks = load_data()
         print("\n")
+        print("Tasks list :\n")
         for task in tasks:
             if task['status'] == status:
-                print(f"{task['description']}    \tstatus : {task['status']}\n")
+                 print(f"{task['id']} \t{task['description']}    \tstatus : {task['status']}\n")
     else:
         print("Wrong command\n")
 
@@ -90,6 +94,7 @@ def mark_status(status,task_id):
     print(f"status : {status}")
     tasks = load_data()
     print("\n")
+    # check if the given status is correct
     if status in status_list:
         try:
             tasks[int(task_id)-1]['status'] = status
